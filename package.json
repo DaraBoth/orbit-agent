@@ -1,0 +1,37 @@
+{
+  "name": "orbit-agent",
+  "version": "0.1.0",
+  "description": "Local NAT bridge daemon that connects a laptop-based coding agent to ORBIT: presence heartbeats, activity streaming, @mention delivery, and opt-in autonomous execution via Claude Code.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "orbit-agent": "./bin/orbit-agent.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node test/run-all.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DaraBoth/orbit-agent.git"
+  },
+  "homepage": "https://github.com/DaraBoth/orbit-agent#readme",
+  "bugs": {
+    "url": "https://github.com/DaraBoth/orbit-agent/issues"
+  },
+  "keywords": [
+    "orbit",
+    "agent",
+    "claude-code",
+    "automation",
+    "cli"
+  ]
+}

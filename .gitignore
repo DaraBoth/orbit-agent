@@ -1,0 +1,9 @@
+node_modules/
+.reference/
+*.log
+
+# local runtime/config — never commit tokens or per-machine state
+.orbit-agent/
+.env
+.env.*
+!.env.example
