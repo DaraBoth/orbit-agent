@@ -15,6 +15,7 @@ export const CONFIG_PATH = path.join(CONFIG_DIR, 'config.json');
 export const STATE_PATH = path.join(CONFIG_DIR, 'state.json');
 export const PID_PATH = path.join(CONFIG_DIR, 'orbit-agent.pid');
 export const HOOK_SCRIPT_PATH = path.join(CONFIG_DIR, 'hooks', 'report-agent-event.mjs');
+export const INBOX_SCRIPT_PATH = path.join(CONFIG_DIR, 'hooks', 'check-orbit-inbox.mjs');
 
 export function ensureConfigDir() {
   fs.mkdirSync(CONFIG_DIR, { recursive: true, mode: 0o700 });

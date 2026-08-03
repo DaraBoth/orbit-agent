@@ -1,14 +1,35 @@
+import { runInit } from './commands/init.mjs';
 import { runConnect } from './commands/connect.mjs';
 import { runStatus } from './commands/status.mjs';
 import { runStop } from './commands/stop.mjs';
 
-const HELP = `orbit-agent — local NAT bridge between a laptop coding agent and ORBIT
+const HELP = `orbit-agent — one-command ORBIT onboarding, plus a local NAT bridge daemon
+between a laptop coding agent and ORBIT
 
 Usage:
+  orbit-agent init --token <dgm_pat_...> --goal <id> [options]
   orbit-agent connect --goal <id> --role <role> --instance <label> [options]
   orbit-agent status
   orbit-agent stop
   orbit-agent --help
+
+Start here: \`init\` verifies your token, saves config, and wires up this
+project's .claude/ (hooks, an ORBIT skill, and /orbit-inbox) in one shot —
+that's the entire beginner setup:
+
+  npx orbit-agent init --token dgm_pat_... --goal <goalId> --base-url https://your-orbit-host
+
+init options:
+  --token <token>           dgm_pat_... token (required first run; default $ORBIT_API_KEY)
+  --goal <id>               ORBIT goal id to attach to (required first run)
+  --base-url <url>          ORBIT base URL (default: https://orbitkh.vercel.app)
+  --dir <path>              Project directory to set up (default: cwd)
+  --role <role>             Agent identity role, e.g. dev-agent (defaulted if omitted)
+  --instance <label>        Instance label, e.g. laptopA (defaulted from hostname if omitted)
+
+\`init\` does not start the daemon. Run \`connect\` afterward (in the same
+directory) when you want live heartbeats and @mention delivery — that's the
+additional step, not the default one.
 
 connect options:
   --goal <id>              ORBIT goal id to attach to (required first run)
@@ -39,6 +60,14 @@ export async function main(argv) {
   }
 
   try {
+    if (rest.includes('--help') || rest.includes('-h')) {
+      console.log(HELP);
+      return;
+    }
+    if (cmd === 'init') {
+      await runInit(rest);
+      return;
+    }
     if (cmd === 'connect') {
       await runConnect(rest);
       return;

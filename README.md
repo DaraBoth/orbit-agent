@@ -12,23 +12,54 @@ is supply-chain risk, so there simply aren't any.
 ## Install
 
 Node 22+ required (uses `node --experimental` free features — no build
-step, no compilation, run straight from source):
+step, no compilation, run straight from source). The entire beginner setup
+is one command:
 
 ```bash
-npx orbit-agent connect --goal <goal-id> --role dev-agent --instance laptopA
-```
-
-or install it globally / add it to a project if you'd rather not re-fetch
-it on every run:
-
-```bash
-npm install -g orbit-agent
-orbit-agent connect --goal <goal-id> --role dev-agent --instance laptopA
+npx orbit-agent init --token dgm_pat_... --goal <goal-id> --base-url https://your-orbit-host
 ```
 
 You need an ORBIT agent-identity token (`dgm_pat_...`, minted in ORBIT's own
 token settings). Pass it via `--token`, or set `$ORBIT_API_KEY` — the same
-env var `apps/dailygoalmap/public/orbit.cjs` already uses.
+env var `apps/dailygoalmap/public/orbit.cjs` already uses. `--base-url`
+defaults to `https://orbitkh.vercel.app` if you're using hosted ORBIT rather
+than a self-hosted instance.
+
+`init` verifies the token against the server first — it fails fast with a
+clear error and writes nothing if the token is rejected. Once verified, it:
+
+1. Saves `~/.orbit-agent/config.json` (chmod `0600`, never printed in full).
+2. Merges the D1 activity-streaming hooks into `<dir>/.claude/settings.json`
+   (merges, never clobbers whatever's already there — see D1 below).
+3. Installs an `orbit` skill at `<dir>/.claude/skills/orbit/SKILL.md` that
+   teaches the model how to actually work ORBIT tasks: read its queue,
+   claim atomically, post progress, use `@mentions`, and mark work done.
+4. Installs a `/orbit-inbox` slash command that checks for pending
+   `@mention` dispatches on demand, without needing the daemon running.
+
+`--role`/`--instance` are optional — if omitted, `init` tries to resolve
+them for the token and otherwise falls back to a sensible default (and says
+plainly which it did; ORBIT's current API has no endpoint that returns a
+token's registered role/instance to the client, so a fallback is often
+what actually happens — pass `--role`/`--instance` explicitly if you want a
+specific pair). Running `init` again (e.g. after cloning the project
+elsewhere) is safe — it's idempotent, not destructive.
+
+`init` does **not** start the daemon by itself; run `connect` afterward
+(same directory) as the additional step whenever you want live heartbeats
+and `@mention` delivery running:
+
+```bash
+orbit-agent connect --goal <goal-id> --role dev-agent --instance laptopA
+```
+
+Prefer not to re-fetch the package on every run? Install it once instead:
+
+```bash
+npm install -g orbit-agent
+orbit-agent init --token dgm_pat_... --goal <goal-id>
+orbit-agent connect --goal <goal-id> --role dev-agent --instance laptopA
+```
 
 ## The three phases
 
@@ -58,16 +89,30 @@ section below before turning this on.
 ## Commands
 
 ```
+orbit-agent init --token <dgm_pat_...> --goal <id> [options]
 orbit-agent connect --goal <id> --role <role> --instance <label> [options]
 orbit-agent status
 orbit-agent stop
 orbit-agent --help
 ```
 
-`connect` runs in the foreground as a daemon loop (heartbeat + mention
-poll); run it under `tmux`/`nohup`/a service manager if you want it to
-survive a closed terminal. `status`/`stop` are separate, quick invocations
-that read the same on-disk state.
+`init` is a one-shot setup command — it verifies the token, writes config,
+and wires up `.claude/` (hooks, skill, `/orbit-inbox`), then exits. `connect`
+runs in the foreground as a daemon loop (heartbeat + mention poll); run it
+under `tmux`/`nohup`/a service manager if you want it to survive a closed
+terminal. `status`/`stop` are separate, quick invocations that read the
+same on-disk state.
+
+Key `init` options:
+
+| Flag | Meaning |
+|---|---|
+| `--token <token>` | `dgm_pat_...` token (required first run; default `$ORBIT_API_KEY`) |
+| `--goal <id>` | ORBIT goal id to attach to (required first run) |
+| `--base-url <url>` | ORBIT base URL (default `https://orbitkh.vercel.app`) |
+| `--dir <path>` | Project directory to set up (default: cwd) |
+| `--role <role>` | Agent identity role, e.g. `dev-agent` (defaulted if omitted) |
+| `--instance <label>` | Instance label, e.g. `laptopA` (defaulted from hostname if omitted) |
 
 Key `connect` options:
 
@@ -160,6 +205,10 @@ spawns a real `claude`). At minimum, the suite proves:
   (`test-config-permissions.mjs`)
 - installing the hook merges into an existing `.claude/settings.json`
   rather than clobbering it, and is idempotent (`test-hook-merge.mjs`)
+- `init` verifies the token before writing anything (a rejected token
+  leaves no config, no hooks, no skill, no command file behind), is
+  idempotent end-to-end, and never touches unrelated existing settings
+  (`test-init.mjs`)
 - `--allow-execute` is never silently inherited from a previous connect
   (`test-opt-in-execute.mjs`)
 - execution is always confined to the configured project directory
