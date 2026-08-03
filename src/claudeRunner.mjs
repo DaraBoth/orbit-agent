@@ -119,9 +119,18 @@ export async function executeMention(cfg, dispatch) {
     // shell:false (the spawn default) is load-bearing: argv is passed
     // straight to execve, never through /bin/sh, so nothing in the prompt
     // or tool list can be reinterpreted as shell syntax.
+    // Strip the parent's CLAUDE_* vars. If the daemon was started from inside
+    // a Claude Code session, the child inherits CLAUDE_CONFIG_DIR / CLAUDECODE
+    // / CLAUDE_CODE_CHILD_SESSION and resolves the PARENT's config instead of
+    // the user's own login — failing with "Invalid API key". Observed live
+    // 2026-08-03 when an agent replied with that error instead of doing work.
+    const childEnv = Object.fromEntries(
+      Object.entries(process.env).filter(([k]) => !k.startsWith('CLAUDE_') && k !== 'CLAUDECODE'),
+    );
     const child = spawn('claude', args, {
       cwd: cfg.projectDir,
       stdio: ['ignore', 'pipe', 'pipe'],
+      env: childEnv,
     });
     inFlight = { child, dispatchId: dispatch.id };
 

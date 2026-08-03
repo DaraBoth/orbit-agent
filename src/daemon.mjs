@@ -55,7 +55,12 @@ export async function startDaemon(cfg) {
   const runExecution = async (dispatch) => {
     writeState({ executing: true, executingDispatchId: dispatch.id });
     try {
-      const mentionText = await orbit.fetchCommentBody(cfg, dispatch.task_id, dispatch.comment_id);
+      // Prefer the body the claim response now carries. The old fallback
+      // went through the tasks.comments MCP tool, which REQUIRES a task_id —
+      // so it failed outright for goal-level mentions (task_id IS NULL) and
+      // the agent replied with that error instead of doing the work.
+      const mentionText = dispatch.comment_body
+        ?? await orbit.fetchCommentBody(cfg, dispatch.task_id, dispatch.comment_id);
       const result = await executeMention(cfg, { ...dispatch, mentionText });
       await orbit.completeDispatch(cfg, dispatch.id, result.summary);
       console.log(`orbit-agent: dispatch ${dispatch.id} completed and reply posted.`);
