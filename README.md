@@ -1,5 +1,8 @@
 # orbit-agent
 
+> Installed straight from GitHub — this package is **not published to npm**, so a bare `npx orbit-agent` will 404.
+
+
 A local NAT bridge daemon that connects a laptop-based coding agent to
 [ORBIT](https://orbitkh.vercel.app). ORBIT's Agent Workspace backend can't
 reach an agent sitting behind NAT/a firewall, so `orbit-agent` is the
@@ -16,7 +19,7 @@ step, no compilation, run straight from source). The entire beginner setup
 is one command:
 
 ```bash
-npx orbit-agent init --token dgm_pat_... --goal <goal-id> --base-url https://your-orbit-host
+npx github:DaraBoth/orbit-agent init --token dgm_pat_... --goal <goal-id> --base-url https://your-orbit-host
 ```
 
 You need an ORBIT agent-identity token (`dgm_pat_...`, minted in ORBIT's own
