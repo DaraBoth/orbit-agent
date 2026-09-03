@@ -44,7 +44,7 @@ function loadAgentConfig() {
     return {
       token: cfg.token,
       goalId: cfg.goalId,
-      ingestUrl: `${(cfg.baseUrl || 'https://orbitkh.vercel.app').replace(/\/+$/, '')}/api/agent-events`,
+      ingestUrl: `${(cfg.baseUrl || 'https://orbit.vongpichdaraboth.com').replace(/\/+$/, '')}/api/agent-events`,
     };
   } catch {
     return null;

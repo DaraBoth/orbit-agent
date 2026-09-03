@@ -44,7 +44,7 @@ export async function runInit(argv) {
     throw new Error(`--dir does not exist or is not a directory: ${projectDir}`);
   }
 
-  const baseUrl = (values['base-url'] || existing?.baseUrl || 'https://orbitkh.vercel.app').replace(/\/+$/, '');
+  const baseUrl = (values['base-url'] || existing?.baseUrl || 'https://orbit.vongpichdaraboth.com').replace(/\/+$/, '');
 
   const token = values.token || process.env.ORBIT_API_KEY || existing?.token;
   if (!token || !token.startsWith('dgm_pat_')) {

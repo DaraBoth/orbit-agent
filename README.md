@@ -4,7 +4,7 @@
 
 
 A local NAT bridge daemon that connects a laptop-based coding agent to
-[ORBIT](https://orbitkh.vercel.app). ORBIT's Agent Workspace backend can't
+[ORBIT](https://orbit.vongpichdaraboth.com). ORBIT's Agent Workspace backend can't
 reach an agent sitting behind NAT/a firewall, so `orbit-agent` is the
 outbound half of the connection: it polls and pushes, ORBIT never has to.
 
@@ -25,7 +25,7 @@ npx github:DaraBoth/orbit-agent init --token dgm_pat_... --goal <goal-id> --base
 You need an ORBIT agent-identity token (`dgm_pat_...`, minted in ORBIT's own
 token settings). Pass it via `--token`, or set `$ORBIT_API_KEY` — the same
 env var `apps/dailygoalmap/public/orbit.cjs` already uses. `--base-url`
-defaults to `https://orbitkh.vercel.app` if you're using hosted ORBIT rather
+defaults to `https://orbit.vongpichdaraboth.com` if you're using hosted ORBIT rather
 than a self-hosted instance.
 
 `init` verifies the token against the server first — it fails fast with a
@@ -112,7 +112,7 @@ Key `init` options:
 |---|---|
 | `--token <token>` | `dgm_pat_...` token (required first run; default `$ORBIT_API_KEY`) |
 | `--goal <id>` | ORBIT goal id to attach to (required first run) |
-| `--base-url <url>` | ORBIT base URL (default `https://orbitkh.vercel.app`) |
+| `--base-url <url>` | ORBIT base URL (default `https://orbit.vongpichdaraboth.com`) |
 | `--dir <path>` | Project directory to set up (default: cwd) |
 | `--role <role>` | Agent identity role, e.g. `dev-agent` (defaulted if omitted) |
 | `--instance <label>` | Instance label, e.g. `laptopA` (defaulted from hostname if omitted) |
@@ -125,7 +125,7 @@ Key `connect` options:
 | `--role <role>` | Agent identity role, e.g. `dev-agent` |
 | `--instance <label>` | Instance label, e.g. `laptopA` |
 | `--dir <path>` | Project directory to confine to (default: cwd) |
-| `--base-url <url>` | ORBIT base URL (default `https://orbitkh.vercel.app`) |
+| `--base-url <url>` | ORBIT base URL (default `https://orbit.vongpichdaraboth.com`) |
 | `--token <token>` | `dgm_pat_...` token (default `$ORBIT_API_KEY`, or reused from a saved config) |
 | `--heartbeat-interval <s>` | Default 45 |
 | `--poll-interval <s>` | Default 20 |

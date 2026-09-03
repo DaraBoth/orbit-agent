@@ -22,7 +22,7 @@ that's the entire beginner setup:
 init options:
   --token <token>           dgm_pat_... token (required first run; default $ORBIT_API_KEY)
   --goal <id>               ORBIT goal id to attach to (required first run)
-  --base-url <url>          ORBIT base URL (default: https://orbitkh.vercel.app)
+  --base-url <url>          ORBIT base URL (default: https://orbit.vongpichdaraboth.com)
   --dir <path>              Project directory to set up (default: cwd)
   --role <role>             Agent identity role, e.g. dev-agent (defaulted if omitted)
   --instance <label>        Instance label, e.g. laptopA (defaulted from hostname if omitted)
@@ -36,7 +36,7 @@ connect options:
   --role <role>             Agent identity role, e.g. dev-agent (required first run)
   --instance <label>        Instance label, e.g. laptopA (required first run)
   --dir <path>              Project directory to confine to (default: cwd)
-  --base-url <url>          ORBIT base URL (default: https://orbitkh.vercel.app)
+  --base-url <url>          ORBIT base URL (default: https://orbit.vongpichdaraboth.com)
   --token <token>           dgm_pat_... token (default: $ORBIT_API_KEY, or reused from a saved config)
   --heartbeat-interval <s>  Heartbeat interval in seconds (default: 45)
   --poll-interval <s>       Mention poll interval in seconds (default: 20)
